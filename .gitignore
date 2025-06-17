@@ -1,0 +1,81 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment files
+.env
+.env.*.local
+!.env.example
+
+# Logs
+/logs/*.log
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Docker
+.docker-sync/
+docker-compose.override.yml
+
+# Composer
+composer.lock
+composer.phar
+/composer.lock
+
+# Composer cache
+.composer/
+
+# PHPUnit
+/phpunit.xml
+/phpunit.xml.dist
+
+# Local development
+.phpunit.result.cache
+
+# Temp files
+*.swp
+*.swo
+*~
+
+# Cache and logs
+/cache/*
+!cache/.gitkeep
+
+# Local environment overrides
+.env.local.php
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+data/
+!data/.gitkeep
+
+# Testing
+/coverage/
+.phpunit.cache/
+/build/
+
+# Temporary files
+/tmp/
+/temp/
