@@ -1,46 +1,77 @@
-# SLIM Framework 4 Migration Project
+# Slim Framework 4 - Projeto Base
 
-## Project Overview
-This project involves migrating an existing application from SLIM Framework 3 to SLIM Framework 4 while maintaining the same folder structure but following SLIM 4 patterns and best practices.
+## 🚀 Visão Geral
 
-## Technical Stack
-- **Backend**:
-  - PHP 8.3
-  - SLIM Framework 4
-  - Composer for dependency management
+Este é um projeto base para desenvolvimento de aplicações web utilizando o Slim Framework 4. O projeto já vem configurado com Docker, banco de dados MariaDB, Redis para cache, e suporte a internacionalização.
 
-- **Database**:
-  - MariaDB 12
+## 🛠️ Tecnologias Principais
 
-- **Frontend**:
-  - Migrating from AdminLTE 2 to Inspinia By WebAppLayers
+### Backend
+- **PHP 8.3** - Última versão estável do PHP
+- **Slim Framework 4** - Micro-framework PHP para APIs e aplicações web
+- **Eloquent ORM** - ORM elegante para trabalhar com banco de dados
+- **Plates** - Sistema de templates simples, rápido e seguro
+- **PHP-DI** - Container de injeção de dependências
+- **Monolog** - Sistema de logging
 
-- **Development Environment**:
-  - Docker
-  - Apache web server
+### Banco de Dados
+- **MariaDB 12** - Sistema gerenciador de banco de dados relacional
+- **Redis** - Armazenamento de cache em memória
 
-## Project Structure
+### Infraestrutura
+- **Docker** - Containers para desenvolvimento e produção
+- **Docker Compose** - Orquestração de containers
+- **Apache** - Servidor web
+- **PHPMyAdmin** - Interface web para gerenciamento do banco de dados
+
+### Ferramentas de Desenvolvimento
+- **Composer** - Gerenciador de dependências PHP
+- **PHPUnit** - Framework para testes unitários
+- **PHP_CodeSniffer** - Ferramenta de análise estática
+
+## 📦 Estrutura do Projeto
+
 ```
-slim4/
-├── config/               # Configuration files
-├── public/               # Web server root
-│   └── index.php         # Application entry point
-├── src/                  # Application source code
-│   ├── Middleware/       # Custom middleware
-│   ├── Routes/           # Route definitions
-│   └── ...
-├── templates/            # View templates
-│   └── ...
-├── tests/               # Test files
-├── var/                  # Temporary files, logs, etc.
-├── vendor/               # Composer dependencies
-├── .env                  # Environment variables
-├── .env.example          # Example environment variables
-├── composer.json         # Project dependencies
-├── composer.lock         # Locked dependencies
-└── README.md             # This file
+.
+├── bin/                  # Scripts úteis
+│   └── setup.sh          # Script de configuração inicial
+├── config/               # Arquivos de configuração
+├── database/             # Migrações e seeds
+│   ├── migrations/       # Migrações do banco de dados
+│   └── migrate.php       # Script de migração
+├── docker/               # Configurações do Docker
+│   ├── apache/           # Configuração do Apache
+│   ├── healthcheck/      # Scripts de verificação de saúde
+│   ├── mariadb/          # Configuração do MariaDB
+│   └── php/              # Configuração do PHP
+├── public/               # Pasta pública do servidor web
+│   ├── index.php         # Ponto de entrada da aplicação
+│   └── .htaccess        # Configurações do Apache
+├── resources/            # Recursos (templates, traduções, etc.)
+│   └── lang/            # Arquivos de tradução
+│       └── pt_BR/       # Traduções em português
+├── src/                  # Código-fonte da aplicação
+│   ├── Controllers/     # Controladores
+│   ├── Models/          # Modelos do Eloquent
+│   ├── Handlers/        # Manipuladores de erros
+│   ├── app.php          # Configuração da aplicação
+│   ├── dependencies.php # Injeção de dependências
+│   ├── helpers.php      # Funções auxiliares globais
+│   ├── middleware.php   # Middleware global
+│   ├── routes.php       # Definição de rotas
+│   └── settings.php     # Configurações da aplicação
+├── templates/            # Templates usando Plates
+├── var/                  # Arquivos temporários
+│   └── logs/            # Logs da aplicação
+├── .env                 # Variáveis de ambiente (não versionado)
+├── .env.example         # Exemplo de variáveis de ambiente
+├── .gitignore           # Arquivos ignorados pelo Git
+├── composer.json        # Dependências do projeto
+├── composer.lock        # Versões travadas das dependências
+└── docker-compose.yml   # Configuração dos serviços Docker
+```
 
-## 🚀 Guia de Configuração Rápida
+## 🚀 Como Começar
 
 ### Pré-requisitos
 
@@ -58,6 +89,7 @@ slim4/
 
 2. **Execute o script de setup**
    ```bash
+   chmod +x bin/setup.sh
    ./bin/setup.sh
    ```
    
@@ -78,126 +110,87 @@ slim4/
 
 ## 🛠 Comandos Úteis
 
-- **Iniciar os containers**:
-  ```bash
-  docker compose up -d
-  ```
-
-- **Parar os containers**:
-  ```bash
-  docker compose down
-  ```
-
-- **Instalar/atualizar dependências**:
-  ```bash
-  docker compose run --rm composer install
-  ```
-
-- **Executar migrações**:
-  ```bash
-  docker compose exec web php database/migrate.php
-  ```
-
-- **Acessar o container web**:
-  ```bash
-  docker compose exec web bash
-  ```
-
-## 🔒 Configuração de Permissões
-
-Se encontrar erros de permissão, execute:
+### Gerenciamento de Containers
 
 ```bash
-# Ajustar permissões dos diretórios
-chmod -R 777 logs/
-chmod -R 777 tmp/
-
-# Se necessário, ajuste o dono do diretório vendor
-sudo chown -R $USER:$(id -gn) vendor/
-```
-
-## 🐛 Solução de Problemas
-
-### Erro de permissão ao instalar dependências
-
-Se o Composer falhar com erros de permissão, tente:
-
-```bash
-# Remova o diretório vendor existente (se houver)
-rm -rf vendor/
-
-# Execute o composer com as permissões corretas
-docker compose run --rm --no-deps composer install --no-interaction --prefer-dist --optimize-autoloader
-```
-
-### Erro ao acessar o banco de dados
-
-Verifique se o serviço do banco de dados está em execução:
-
-```bash
-docker compose ps
-```
-
-Se o MariaDB não estiver saudável, tente:
-
-```bash
-docker compose down -v
+# Iniciar os containers em segundo plano
 docker compose up -d
+
+# Parar os containers
+docker compose down
+
+# Verificar status dos containers
+docker compose ps
+
+# Visualizar logs dos containers
+docker compose logs -f
 ```
 
-## 📦 Estrutura do Projeto
+### Desenvolvimento
 
-```
-slim4/
-├── bin/                 # Scripts úteis
-│   └── setup.sh         # Script de configuração inicial
-├── config/              # Arquivos de configuração
-├── database/            # Migrações e seeds
-├── docker/              # Configurações do Docker
-│   ├── mariadb/         # Configuração do MariaDB
-│   └── php/             # Configuração do PHP
-├── public/              # Pasta pública do servidor web
-│   ├── index.php        # Ponto de entrada da aplicação
-│   └── .htaccess       # Configurações do Apache
-├── resources/           # Recursos (templates, traduções, etc.)
-│   └── lang/           # Arquivos de tradução
-│       └── pt_BR/      # Traduções em português
-├── src/                 # Código-fonte da aplicação
-│   ├── Controllers/    # Controladores
-│   ├── Models/         # Modelos
-│   ├── Services/       # Serviços
-│   ├── Handlers/       # Manipuladores de erros
-│   ├── app.php         # Configuração da aplicação
-│   ├── dependencies.php # Injeção de dependências
-│   ├── helpers.php     # Funções auxiliares
-│   ├── middleware.php  # Middleware global
-│   ├── routes.php      # Definição de rotas
-│   └── settings.php    # Configurações da aplicação
-├── templates/           # Templates de visualização
-├── tests/              # Testes automatizados
-├── var/                # Arquivos temporários
-│   └── cache/         # Cache da aplicação
-├── .env                # Variáveis de ambiente (não versionado)
-├── .env.example        # Exemplo de variáveis de ambiente
-├── .gitignore          # Arquivos ignorados pelo Git
-├── composer.json       # Dependências do projeto
-├── composer.lock       # Versões travadas das dependências
-└── docker-compose.yml  # Configuração dos serviços Docker
+```bash
+# Instalar/atualizar dependências
+docker compose run --rm composer install
+
+# Executar migrações
+docker compose exec web php database/migrate.php
+
+# Acessar o container web
+docker compose exec web bash
+
+# Executar testes
+docker compose exec web ./vendor/bin/phpunit
 ```
 
-## 📝 Licença
+## 🔧 Configurações Avançadas
 
-Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
+### Variáveis de Ambiente
+
+O arquivo `.env` contém todas as configurações da aplicação. As principais são:
+
+```
+# Configurações do banco de dados
+DB_HOST=mariadb
+DB_DATABASE=slimdb
+DB_USERNAME=slim
+DB_PASSWORD=slim123
+
+# Configurações da aplicação
+APP_ENV=development
+APP_DEBUG=true
+APP_LOCALE=pt_BR
+
+# Configurações de cache
+CACHE_DRIVER=redis
+REDIS_HOST=redis
+```
+
+### Adicionando Novas Dependências
+
+Para adicionar uma nova dependência ao projeto:
+
+```bash
+docker compose run --rm composer require vendor/package
+```
+
+## 📚 Documentação Adicional
+
+- [Documentação do Slim Framework 4](https://www.slimframework.com/docs/v4/)
+- [Documentação do Eloquent ORM](https://laravel.com/docs/10.x/eloquent)
+- [Documentação do Plates](https://platesphp.com/)
+- [Documentação do Docker](https://docs.docker.com/)
 
 ## 🤝 Contribuição
 
 1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas alterações (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas alterações (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
 5. Abra um Pull Request
-1. Clone the repository
-2. Copy `.env.example` to `.env` and configure your environment variables
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 3. Run `docker-compose up -d` to start the development environment
 4. Install dependencies with `composer install`
 
