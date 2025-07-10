@@ -16,6 +16,11 @@ return [
     ResponseFactoryInterface::class => function () {
         return new \Slim\Psr7\Factory\ResponseFactory();
     },
+    
+    // Response Factory (alias para compatibilidade)
+    'responseFactory' => function (ContainerInterface $container) {
+        return $container->get(ResponseFactoryInterface::class);
+    },
 
     // Application settings
     'settings' => function () {
@@ -98,6 +103,7 @@ return [
             $container->get(ResponseFactoryInterface::class)
         );
     },
+    
 
     // Not Allowed Handler
     'notAllowedHandler' => function (ContainerInterface $container) {

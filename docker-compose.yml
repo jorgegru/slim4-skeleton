@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   web:
     build:
@@ -73,12 +71,16 @@ services:
   composer:
     image: composer:latest
     container_name: composer
-    user: "${UID}:${GID}"
+    user: "${APP_UID}:${APP_GID}"
     volumes:
       - .:/app
     working_dir: /app
     environment:
       - COMPOSER_HOME=/app/.composer
+      # Configure git to trust the /app directory
+      - GIT_CONFIG_COUNT=1
+      - GIT_CONFIG_KEY_0=safe.directory
+      - GIT_CONFIG_VALUE_0=/app
     networks:
       - app-network
 

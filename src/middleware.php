@@ -5,26 +5,20 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 
 return function (\Slim\App $app) {
-    // Add Routing Middleware
-    $app->addRoutingMiddleware();
-
-    // Add Error Middleware (already added in app.php, but keeping here for reference)
-    // $errorMiddleware = $app->addErrorMiddleware(true, true, true);
-
-    // Example of adding a custom middleware
+    // Add custom headers middleware
     $app->add(function (Request $request, RequestHandler $handler) {
-        // Example: Add a custom header to all responses
         $response = $handler->handle($request);
         return $response
             ->withHeader('X-Application-Name', 'Slim 4 App')
-            ->withHeader('X-Application-Version', '1.0.0');
+            ->withHeader('X-Application-Version', '1.0.0')
+            ->withHeader('Content-Type', 'application/json');
     });
 
     // Parse JSON, Form Data and XML
     $app->addBodyParsingMiddleware();
 
-    // Add the built-in middleware for handling the base path
-    $app->add(new \Slim\Middleware\BodyParsingMiddleware());
+    // Add Routing Middleware (should be after body parsing)
+    $app->addRoutingMiddleware();
 
     // Add the built-in middleware for handling trailing slashes
     $app->add(function (Request $request, RequestHandler $handler) {

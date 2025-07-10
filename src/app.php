@@ -3,6 +3,7 @@
 use DI\Container;
 use Psr\Container\ContainerInterface;
 use Slim\Factory\AppFactory;
+use Slim\Exception\HttpNotFoundException;
 
 // Create Container using PHP-DI
 $container = new Container();
@@ -26,20 +27,17 @@ $app = AppFactory::create();
 // Initialize database connection
 $container->get('db');
 
-// Set base path if your application is not in the web root
-// $app->setBasePath('/slim4');
-
-// Register middleware
+// Register middleware first
 $middleware = require __DIR__ . '/middleware.php';
 $middleware($app);
 
-// Register routes
+// Then register routes
 $routes = require __DIR__ . '/routes.php';
 $routes($app);
 
-// Add Error Middleware
+// Add Error Middleware (should be added after routes)
 $errorMiddleware = $app->addErrorMiddleware(
-    $settings['displayErrorDetails'],
+    $settings['displayErrorDetails'] ?? false,
     true,
     true
 );
@@ -47,5 +45,26 @@ $errorMiddleware = $app->addErrorMiddleware(
 // Set the error handler
 $errorHandler = $container->get('errorHandler');
 $errorMiddleware->setDefaultErrorHandler($errorHandler);
+
+// Add Not Found handler
+$errorMiddleware->setErrorHandler(
+    HttpNotFoundException::class,
+    function (Psr\Http\Message\ServerRequestInterface $request, \Throwable $exception, bool $displayErrorDetails) {
+        $response = new \Slim\Psr7\Response();
+        $data = [
+            'error' => [
+                'status' => 404,
+                'message' => 'Not found.',
+                'details' => [
+                    'message' => 'The requested resource could not be found.',
+                    'path' => $request->getUri()->getPath()
+                ]
+            ]
+        ];
+        
+        $response->getBody()->write(json_encode($data, JSON_PRETTY_PRINT));
+        return $response->withStatus(404)->withHeader('Content-Type', 'application/json');
+    }
+);
 
 return $app;

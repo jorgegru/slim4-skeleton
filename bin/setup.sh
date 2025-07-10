@@ -14,11 +14,7 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# Verifica se o Docker Compose está instalado
-if ! command -v docker-compose &> /dev/null; then
-    echo -e "${YELLOW}❌ Docker Compose não encontrado. Por favor, instale o Docker Compose antes de continuar.${NC}"
-    exit 1
-fi
+
 
 # Cria o arquivo .env se não existir
 if [ ! -f .env ]; then
@@ -29,8 +25,8 @@ if [ ! -f .env ]; then
     sed -i "s/APP_KEY=/APP_KEY=$(openssl rand -base64 32)/" .env
     
     # Define o UID e GID do usuário atual
-    echo "UID=$(id -u)" >> .env
-    echo "GID=$(id -g)" >> .env
+    echo "APP_UID=$(id -u)" >> .env
+    echo "APP_GID=$(id -g)" >> .env
     
     echo -e "${GREEN}✅ Arquivo .env criado com sucesso!${NC}"
 else
@@ -66,7 +62,7 @@ echo -e "${YELLOW}🚀 Iniciando os containers Docker...${NC}"
 docker compose up -d --build
 
 # Executa as migrações
-echo -e "${YELLOW}🔄 Executando migrações do banco de dados...${NC}
+echo -e "${YELLOW}🔄 Executando migrações do banco de dados...${NC}"
 docker compose exec web php database/migrate.php
 
 echo -e "\n${GREEN}✨ Configuração concluída com sucesso!${NC}"
